@@ -25,6 +25,9 @@ var dest_degree = 0;
 var dest_latitude = 0;
 var dest_longtitude = 0;
 
+var angle_Cycle_Between = 0;
+var angle_CounterCycle_Between = 0;
+
 client.config('general:navdata_options',777060865);
 // turn on only gps options
 
@@ -36,18 +39,31 @@ setInterval(function() {
     if (isHack) { // 해당 좌료로 이동 시작
 
         var final_break = false;
+        var cycleDirection = true;
 
         while (1) {
-
-            var i = 0;
             
-            while (current_degree > dest_degree + 2 || current_degree < dest_degree - 2) {
-                
-                i++;
-                if (i>1000) break;
+            if (current_degree >= dest_degree) {
+                angle_Cycle_Between = 360 - current_degree + dest_degree;
+                angle_CounterCycle_Between = current_degree - dest_degree;
+            } // 목적지 방위각이 더 작을때
+            else {
+                angle_Cycle_Between = dest_degree - current_degree;
+                angle_CounterCycle_Between = 360 + current_degree - dest_degree;
+            } // 목적지 방위각이 더 클때
 
-                client.clockwise(0.1);
+            cycleDirection = angle_Cycle_Between > angle_CounterCycle_Between ? false : true ;
+
+            while (current_degree > dest_degree + 2 || current_degree < dest_degree - 2) {
+                if (cycleDirection) {
+                    client.clockwise(0.1);
+                }
+                else {
+                    client.counterClockwise(0.1);
+                }
             }
+
+            client.stop(); // 회전 멈춰랏
 
             while (current_degree <= dest_degree + 2 && current_degree >= dest_degree - 2) {
 
@@ -66,6 +82,9 @@ setInterval(function() {
                     break;
                 }
             }
+
+            client.stop(); // 가는거랏멈춰랏
+
             if (final_break) {
                 break;
             }
