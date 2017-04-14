@@ -31,13 +31,12 @@ function Client(options) {
   this._lastBattery       = 100;
   this._lastAltitude      = 0;
 
-  // ------------------------ 추가 Start ------------------------ //
-  this._destLat = 0;
-  this._destLong = 0;
-  this._hack = false;
-  this._hackData = [];
-
-  // ------------------------ 추가 End ------------------------ //
+  // ------------------------ 추가 속성 Start ------------------------ //
+  this._destLat = 0; // 목적지 위도
+  this._destLong = 0; // 목적지 경도
+  this._hack = false; // 해당 목적지로 가고있는지 여부
+  this._hackData = []; // 해당 목적지 좌표 배열
+  // ------------------------ 추가 속성 End ------------------------ //
 }
 
 Client.prototype.after = function(duration, fn) {
