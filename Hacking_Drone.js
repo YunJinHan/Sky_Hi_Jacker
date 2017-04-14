@@ -75,6 +75,8 @@ setInterval(function() {
 
 });
 
+var i = 0;
+
 setInterval(function(){
 
 	client.on('navdata', function(navdata) {
@@ -127,7 +129,7 @@ setInterval(function(){
 
 	setTimeout(function(){
 		client.removeAllListeners()
-	},100);
+	},1000);
 	// gps information log stop
 	
-},100);
+},1000);
