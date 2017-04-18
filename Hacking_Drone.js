@@ -61,15 +61,13 @@ setInterval(function() {
             }
 
             parrot.stop(); // 회전 멈춰랏
+            parrot.front(1); // 이동 ~
 
             while (current_degree <= dest_degree + 2 && current_degree >= dest_degree - 2) {
-
-                parrot.front(1); // 이동 ~
 
                 if ( (current_latitude <= dest_latitude + 0.000015 && current_latitude >= dest_latitude - 0.000015) 
                     && 
                     (current_longtitude <= dest_longtitude + 0.000015 && current_longtitude >= dest_longtitude - 0.000015) ) {
-                    
                     // 0.00001 도 차이 = 약 1m 차이
 
                     parrot.stop();
@@ -88,9 +86,7 @@ setInterval(function() {
                 break;
             }
         }
-
     }
-
 });
 
 setInterval(function(){
