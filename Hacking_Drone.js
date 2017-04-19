@@ -30,14 +30,19 @@ parrot.createRepl();
 // PoketMon Drone Start
 
 setInterval(function() {
-
+    
     if (isHack) { // 해당 좌료로 이동 시작
-
+       
+        isHack = false;
+        parrot._hack = false;
+        // ---------------- Critical Section Start ---------------- //
         let final_break = false,
             cycleDirection = true;
 
         while (true) {
             
+            console.log("방위각 조정 중 ...");
+
             if (current_degree >= dest_degree) {
                 angle_Cycle_Between = 360 - current_degree + dest_degree;
                 angle_CounterCycle_Between = current_degree - dest_degree;
@@ -59,23 +64,26 @@ setInterval(function() {
                 }
 
             }
+            console.log("방위각 조정 완료 ...");
 
             parrot.stop(); // 회전 멈춰랏
+
+            console.log("Parrot Ar Drone 이동 중 ...");
             parrot.front(1); // 이동 ~
 
             while (current_degree <= dest_degree + 2 && current_degree >= dest_degree - 2) {
-
+           
                 if ( (current_latitude <= dest_latitude + 0.000015 && current_latitude >= dest_latitude - 0.000015) 
                     && 
                     (current_longtitude <= dest_longtitude + 0.000015 && current_longtitude >= dest_longtitude - 0.000015) ) {
                     // 0.00001 도 차이 = 약 1m 차이
 
+                    console.log("Parrot Ar Drone 해당 지점 도착 ...");
+
                     parrot.stop();
                     parrot.land();
 
                     final_break = true;
-                    parrot._hack = false;
-                    isHack = false;
                     break;
                 }
             }
@@ -85,7 +93,10 @@ setInterval(function() {
             if (final_break) {
                 break;
             }
+            console.log("드론 경로 이탈 ...");
+            console.log("방위각 재조정 중 ...");
         }
+        // ---------------- Critical Section End ---------------- //
     }
 });
 
