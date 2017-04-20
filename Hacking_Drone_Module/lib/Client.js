@@ -32,6 +32,8 @@ function Client(options) {
   this._lastAltitude      = 0;
 
   // ------------------------ 추가 속성 Start ------------------------ //
+  this._isTakeOff = false;
+
   this._currentLat = 0; // 현재 위도
   this._currentLong = 0; // 현재 경도
 
@@ -319,12 +321,18 @@ Client.prototype.go = function(cb) {
 
 Client.prototype.takeoff = function(cb) {
   this.once('hovering', cb || function() {});
+
+  this._isTakeOff = true;
+
   this._ref.fly = true;
   return true;
 };
 
 Client.prototype.land = function(cb) {
   this.once('landed', cb || function() {});
+
+  this._isTakeOff = false;
+
   this._ref.fly = false;
   return true;
 };
