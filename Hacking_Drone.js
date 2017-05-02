@@ -21,7 +21,7 @@ var current_degree = 0,
     dest_latitude = 0,
     dest_longtitude = 0,
     goDetermine = false,
-    tmp2 = false;
+    stopDetermine = false;
 
 parrot.config('general:navdata_options',777060865);
 // turn on only gps options

@@ -19,7 +19,9 @@ var current_degree = 0,
     dest_distance = 0,
     dest_degree = 0,
     dest_latitude = 0,
-    dest_longtitude = 0;
+    dest_longtitude = 0,
+    goDetermine = false,
+    stopDetermine = false;
 
 parrot.config('general:navdata_options',777060865);
 // turn on only gps options
@@ -61,9 +63,6 @@ function getData(navdata) {
     parrot._currentDegree = current_degree;
 }
 
-var tmp = false,
-    tmp2 = false;
-
 function modifyDegree() {
     let modifyDegreeID = setInterval(function() {
         if (parrot._currentDegree > parrot._destDegree + 5 || parrot._currentDegree < parrot._destDegree - 5) {
@@ -77,25 +76,25 @@ function modifyDegree() {
             // test code
             console.log("방위각 조정 완료 ... ");
             clearInterval(modifyDegreeID);
-            tmp = true;
+            goDetermine = true;
         }
     },100);
 }
 
 function parrotGo() {
     let parrotGoID = setInterval(function() {
-        if (tmp) {
+        if (goDetermine) {
             console.log("Parrot Ar Drone 이동 시작 ...");
             parrot.front(1); // 이동 ~
             clearInterval(parrotGoID);
-            tmp2 = true;
+            stopDetermine = true;
         }
     });
 }
 
 function parrotStop() {
     let stopParrotID = setInterval(function() {
-        if (tmp2) {
+        if (stopDetermine) {
             console.log("Parrot Ar Drone 이동 중 ...");
             sleep.sleep(5);
             if ( (parrot._currentLat <= parrot._destLat + 0.00002 && parrot._currentLat >= parrot._destLat - 0.00002) 
