@@ -1,5 +1,6 @@
 var EventEmitter = require('events').EventEmitter;
-var util         = require('util');
+var util         = require('util'),
+    sleep        = require('sleep');
 
 Client.UdpControl       = require('./control/UdpControl');
 Client.Repl             = require('./Repl');
@@ -34,11 +35,14 @@ function Client(options) {
   // ------------------------ 추가 속성 Start ------------------------ //
   this._isTakeOff = false;
 
+  this._currentDegree = 0; // 현재 방위각
   this._currentLat = 0; // 현재 위도
   this._currentLong = 0; // 현재 경도
 
+  this._destDegree = 0; // 목적지 방위각
   this._destLat = 0; // 목적지 위도
   this._destLong = 0; // 목적지 경도
+  this._destDistance = 0; // 목적지 까지 거리
 
   this._hack = false; // 해당 목적지로 가고있는지 여부
   this._hackData = []; // 해당 목적지 좌표 배열
@@ -120,7 +124,7 @@ Client.prototype.hack = function(dest_lat,dest_lon) {
       var current_lat_radian = deg2rad(P1_latitude),
           current_lon_radian = deg2rad(P1_longitude),
           destination_lat_radian = deg2rad(P2_latitude),
-          destination_lon_radian =deg2rad(P2_longitude);
+          destination_lon_radian = deg2rad(P2_longitude);
 
       var radian_distance_tmp1 = Math.acos(current_lat_radian) * Math.sin(destination_lat_radian),
           radian_distance_tmp2 = Math.cos(current_lat_radian) * Math.cos(destination_lat_radian) * Math.cos(current_lon_radian - destination_lon_radian),
@@ -137,16 +141,40 @@ Client.prototype.hack = function(dest_lat,dest_lon) {
       return true_bearing.toFixed(2);
   }
 
+  function getDirection() {
+    if (this._currentDegree >= this._destDegree) {
+        angle_Cycle_Between = 360 - this._currentDegree + this._destDegree;
+        angle_CounterCycle_Between = this._currentDegree - this._destDegree;
+        // 목적지 방위각이 더 작을때
+    } else {
+        angle_Cycle_Between = this._destDegree - this._currentDegree;
+        angle_CounterCycle_Between = 360 + this._currentDegree - this._destDegree;
+        // 목적지 방위각이 더 클때
+    }
+    return (angle_Cycle_Between > angle_CounterCycle_Between ? false : true);
+  }
+
   this._destLat = dest_lat;
   this._destLong = dest_lon;
 
-  var distance = calDistance(this._currentLat,this._currentLong,this._destLat,this._destLong),
+  var distance = calDistance(this._currentLat,this._currentLong,this._destLat,this._destLong)*1,
       degree = calBearingAngle(this._currentLat,this._currentLong,this._destLat,this._destLong)*1,
-      degree = degree > 360 ? degree - 360 : (degree < 0 ? degree + 360 : degree),
+      degree = degree > 360 ? degree - 360 : (degree < 0 ? degree + 360 : degree)*1,
       data = [distance,degree];
-
+    
+  this._destDegree = degree;
+  this._destDistance = distance;
   this._hack = true;
   this._hackData = data;
+  
+  sleep.sleep(5);
+
+  if(getDirection()) {
+    this.clockwise(0.5);
+  }
+  else {
+    this.counterClockwise(0.5);
+  }
   
   return "Hacking Success!!";
 }
@@ -412,7 +440,6 @@ pcmdOptions.forEach(function(pair) {
 
     this._pcmd[pair[0]] = speed;
     delete this._pcmd[pair[1]];
-
     return speed;
   };
 
