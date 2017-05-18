@@ -36,7 +36,7 @@ Direction for Using
 2. find telemetry device number in /dev folder.
 <pre>For example<br>/dev/ttyACM0 ..<br>/dev/cu.usbserial-DN012VZR .. etc</pre>
 3. run as this format
-<pre> ./SKY\_HI\_JACKER\_GET\_GPS\_DATA -d /dev/**Your dev number**</pre>
+<pre> ./SKY_HI_JACKER_GET_GPS_DATA -d /dev/**Your dev number**</pre>
 4. then this program create "pixhawk\_gps.json" file every second.<br>JSON file format is as in the following.
 <pre>{
  "lat" : "37.395696",
