@@ -54,6 +54,7 @@
 // ------------------------------------------------------------------------------
 
 #include "mavlink_control.h"
+#include <time.h>
 
 
 // ------------------------------------------------------------------------------
@@ -163,6 +164,17 @@ top (int argc, char **argv)
 
 }
 
+// 추가
+char* timeToString(struct tm *t) {
+  static char s[20];
+
+  sprintf(s, "%04d-%02d-%02d %02d:%02d:%02d",
+              t->tm_year + 1900, t->tm_mon + 1, t->tm_mday,
+              t->tm_hour, t->tm_min, t->tm_sec
+          );
+
+  return s;
+}
 
 // ------------------------------------------------------------------------------
 //   COMMANDS
@@ -216,10 +228,14 @@ commands(Autopilot_Interface &api)
 	api.update_setpoint(sp);
 	// NOW pixhawk will try to move
 
-	// Wait for 8 seconds, check position
+	struct tm *t;
+	time_t timer;
 
-	while(1);
-	{
+	while(1) {
+		// timer = time(NULL);    // 현재 시각을 초 단위로 얻기
+		// t = localtime(&timer); // 초 단위의 시간을 분리하여 구조체에 넣기
+
+		// printf("%s	:", timeToString(t));
 		sleep(1);
 	}
 

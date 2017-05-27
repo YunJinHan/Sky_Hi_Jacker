@@ -294,7 +294,7 @@ read_messages()
 					double lon = (double)current_messages.gps_raw_int.lon/10000000;
 					
 					printf("lat : %f , lon : %f\n",lat,lon);
-					
+
 					write_gps_to_file(lat,lon);
 					break;
 				}
